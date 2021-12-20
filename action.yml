@@ -25,26 +25,19 @@ runs:
              -d 'service=${{ inputs.service }}' \
              -d 'version=${{ inputs.version }}' \
              '${{ inputs.zeno-server }}/api/v1/packages/generate_presigned_upload_request?output=curl'`
-        echo $OUTPUT
         STATUS=`echo "$OUTPUT" | { grep -soP '(?<=ec":)\d+' || test $? = 1; }`
-        echo $STATUS
         if [[ $STATUS -ne 0 ]];then
             echo $OUTPUT
             exit -1
         fi
-        echo 'uploading...'
-        echo $OUTPUT
-        echo $OUTPUT | curl -K - \
+        echo "$OUTPUT" | curl -K - \
              --form-string 'Content-Type=${{ inputs.content-type }}' \
              -o out.xml
-        echo 'uploaded'
         BUCKET=`grep -soP '(?<=Bucket>)[^<]+' out.xml`
         KEY=`grep -soP '(?<=Key>)[^<]+' out.xml`
         ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
         if [ "$BUCKET" = '' ];then
-            echo 'upload fail'
             cat out.xml
-            echo 'upload fail2'
             exit -1
         fi
         curl -sS -X POST \
