@@ -20,20 +20,28 @@ runs:
   steps:
     - shell: bash
       run: |
-        curl -sS -X POST \
+        OUTPUT=`curl -sS -X POST \
              -u '${{ inputs.access-id }}:${{ inputs.access-secret }}' \
              -d 'service=${{ inputs.service }}' \
              -d 'version=${{ inputs.version }}' \
-             '${{ inputs.zeno-server }}/api/v1/packages/generate_presigned_upload_request?output=curl' \
-        | \
-        curl -K - \
+             '${{ inputs.zeno-server }}/api/v1/packages/generate_presigned_upload_request?output=curl'`
+        STATUS=`echo $OUTPUT | grep -soP '(?<=ec":)\d+'`
+
+        if [[ $STATUS -ne 0 ]];then
+            echo $OUTPUT
+            exit -1
+        fi
+        echo $OUTPUT | curl -K - \
              --form-string 'Content-Type=${{ inputs.content-type }}' \
-             --form 'file=@${{ inputs.file }}' \
              -o out.xml
         BUCKET=`grep -soP '(?<=Bucket>)[^<]+' out.xml`
         KEY=`grep -soP '(?<=Key>)[^<]+' out.xml`
         ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
-        curl -X POST \
+        if [ "$BUCKET" = '' ];then
+            cat out.xml
+            exit -1
+        fi
+        curl -sS -X POST \
              -u '${{ inputs.access-id }}:${{ inputs.access-secret }}' \
              -d 'service=${{ inputs.service }}' \
              -d 'version=${{ inputs.version }}' \
