@@ -35,6 +35,6 @@ runs:
         ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
         curl -X POST \
              -u '${{ inputs.access-id }}:${{ inputs.access-secret }}' \
-             -d 'service=${{ input.service }}' \
-             -d 'version=${{ input.version }}' \
+             -d 'service=${{ inputs.service }}' \
+             -d 'version=${{ inputs.version }}' \
              -d "file={ \"Bucket\": \"$BUCKET\", \"Key\": \"$KEY\", \"ETag\": \"${ETAG//\"/\\\"}\" }"
