@@ -30,9 +30,12 @@ runs:
             echo $OUTPUT
             exit -1
         fi
+        echo 'uploading...'
+        echo $OUTPUT
         echo $OUTPUT | curl -K - \
              --form-string 'Content-Type=${{ inputs.content-type }}' \
              -o out.xml
+        echo 'uploaded'
         BUCKET=`grep -soP '(?<=Bucket>)[^<]+' out.xml`
         KEY=`grep -soP '(?<=Key>)[^<]+' out.xml`
         ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
