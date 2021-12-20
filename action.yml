@@ -25,7 +25,9 @@ runs:
              -d 'service=${{ inputs.service }}' \
              -d 'version=${{ inputs.version }}' \
              '${{ inputs.zeno-server }}/api/v1/packages/generate_presigned_upload_request?output=curl'`
+        echo $OUTPUT
         STATUS=`echo $OUTPUT | grep -soP '(?<=ec":)\d+'`
+        echo $STATUS
         if [[ $STATUS -ne 0 ]];then
             echo $OUTPUT
             exit -1
