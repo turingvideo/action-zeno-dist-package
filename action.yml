@@ -33,9 +33,9 @@ runs:
         echo "$OUTPUT" | curl -K - \
              --form-string 'Content-Type=${{ inputs.content-type }}' \
              -o out.xml
-        BUCKET=`grep -soP '(?<=Bucket>)[^<]+' out.xml`
-        KEY=`grep -soP '(?<=Key>)[^<]+' out.xml`
-        ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
+        BUCKET=`{ grep -soP '(?<=Bucket>)[^<]+' out.xml || test $? = 1; }`
+        KEY=`{ grep -soP '(?<=Key>)[^<]+' out.xml || test $? = 1; }`
+        ETAG=`{ grep -soP '(?<=ETag>)[^<]+' out.xml || test $? = 1; }`
         if [ "$BUCKET" = '' ];then
             cat out.xml
             exit -1
