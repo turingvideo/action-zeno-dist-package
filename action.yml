@@ -32,6 +32,7 @@ runs:
         fi
         echo "$OUTPUT" | curl -K - \
              --form-string 'Content-Type=${{ inputs.content-type }}' \
+             --form 'file=@${{ inputs.file }}' \
              -o out.xml
         BUCKET=`{ grep -soP '(?<=Bucket>)[^<]+' out.xml || test $? = 1; }`
         KEY=`{ grep -soP '(?<=Key>)[^<]+' out.xml || test $? = 1; }`
