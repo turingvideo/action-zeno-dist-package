@@ -37,7 +37,9 @@ runs:
         KEY=`grep -soP '(?<=Key>)[^<]+' out.xml`
         ETAG=`grep -soP '(?<=ETag>)[^<]+' out.xml`
         if [ "$BUCKET" = '' ];then
+            echo 'upload fail'
             cat out.xml
+            echo 'upload fail2'
             exit -1
         fi
         curl -sS -X POST \
