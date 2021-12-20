@@ -22,8 +22,8 @@ runs:
       run: |
         curl -sS -X POST \
              -u '${{ inputs.access-id }}:${{ inputs.access-secret }}' \
-             -d 'service=${{ input.service }}' \
-             -d 'version=${{ input.version }}' \
+             -d 'service=${{ inputs.service }}' \
+             -d 'version=${{ inputs.version }}' \
              '${{ inputs.zeno-server }}/api/v1/packages/generate_presigned_upload_request?output=curl' \
         | \
         curl -K - \
