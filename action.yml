@@ -37,4 +37,5 @@ runs:
              -u '${{ inputs.access-id }}:${{ inputs.access-secret }}' \
              -d 'service=${{ inputs.service }}' \
              -d 'version=${{ inputs.version }}' \
-             -d "file={ \"Bucket\": \"$BUCKET\", \"Key\": \"$KEY\", \"ETag\": \"${ETAG//\"/\\\"}\" }"
+             -d "file={ \"Bucket\": \"$BUCKET\", \"Key\": \"$KEY\", \"ETag\": \"${ETAG//\"/\\\"}\" }"\
+             '${{ inputs.zeno-server }}/api/v1/packages/create_with_file_info'
